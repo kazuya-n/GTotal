@@ -1,0 +1,82 @@
+{% extends "observes/base.html" %}
+{% block content %}
+<div class="columns">
+    <div class="box column is-one-third">
+        <img src={{ wc }} />
+    </div>
+    <div class="column is-two-thirds">
+        <div class='title'>
+            {{ hash.sha256 }}
+        </div>
+        <div class='subtitle'>
+            {{ hash.name }}
+        </div>
+        <div class="columns">
+            <div class='column is-one-quarter'>
+                Registered
+            </div>
+            <div class='column is-three-quarter'>
+                {{ hash.create_date }}
+            </div>
+        </div>
+        <div class="columns">
+            <div class='column is-one-quarter'>
+                Last Scan
+            </div>
+            <div class='column is-three-quarter'>
+                {{ scans.last.scan_date }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class = "title">detections</div>
+<div>
+    <canvas id="lineChart" height="200" width="400"></canvas>
+</div>
+<script language="JavaScript">
+    chartColors = {
+        red: 'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 192)',
+        blue: 'rgb(54, 162, 235)',
+        purple: 'rgb(153, 102, 255)',
+        grey: 'rgb(201, 203, 207)'
+    };
+    var data = {
+        labels: [{% for item in label %}
+        new Date("{{item}}"),
+        {% endfor %}],
+        datasets: [{
+                label: "Detections",
+                data: {{ dets }},
+                backgroundColor: chartColors.red,
+                borderColor: chartColors.red,
+        },{
+                label: "Engines",
+                data: {{ engs }},
+                backgroundColor: chartColors.blue,
+                borderColor: chartColors.blue,
+        },
+        ]
+    };
+    var ctx = document.getElementById("lineChart").getContext("2d");
+    var options = {
+        scales: {
+            xAxes: [{
+            type: 'time',
+            time: {
+            displayFormats: {
+            quarter: 'MMM YYYY'
+            }
+            }
+            }]
+        }
+    };
+    var lineChart = new Chart(ctx, {
+        type:'line',
+        data:data,
+        options:options
+    });
+</script>
+{% endblock %}

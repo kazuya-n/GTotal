@@ -1,0 +1,36 @@
+{% extends "observes/base.html" %}
+{% block content %}
+{% if latest_hash_list %}
+
+<h1 class="title">Latest Obserbations</h1>
+
+{% for hash in latest_hash_list %}
+
+<div class="card">
+    <div class="card-content">
+        <p class="title">
+            <span class="is-danger">{{ hash.detection_of_hash.last.detections }}</span> ← {{ hash.detection_of_hash.first.detections }}
+        </p>
+        <p class="subtitle">
+            <a href="{% url 'observes:detail' hash.sha256 %}">{{ hash.sha256 }}</a>
+        </p>
+    </div>
+    <footer class="card-footer">
+        <p class="card-footer-item">
+            <span>
+                Last Analyzed at {{ hash.detection_of_hash.last.scan_date }}
+            </span>
+        </p>
+        <p class="card-footer-item">
+            <span>
+                registered at {{ hash.create_date }}
+            </span>
+        </p>
+    </footer>
+</div>
+<br>
+{% endfor %}
+{% else %}
+<p>No hashs are available.</p>
+{% endif %}
+{% endblock %}

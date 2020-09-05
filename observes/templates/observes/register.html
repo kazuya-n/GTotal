@@ -1,0 +1,7 @@
+<h1>Register New Hash</h1>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="{% url 'observes:register' %}" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit" class="save btn btn-default">Save</button>
+</form>

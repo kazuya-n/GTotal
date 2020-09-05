@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+django-debug-toolbar = "*"
+
+[packages]
+django = "*"
+django-crontab = "*"
+django-environ = "*"
+requests = "*"
+wordcloud = "*"
+
+[requires]
+python_version = "3.8"
