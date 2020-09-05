@@ -8,7 +8,7 @@
 
 ## Installation
 - requires *python3* and *pipenv*
-```
+```shell
 # Install dependencies
 $ pipenv install --python 3
 $ pipenv install
