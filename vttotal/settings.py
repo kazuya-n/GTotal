@@ -129,6 +129,8 @@ CRONJOBS = [
      ['vt_rescan'], {}),
     ('0 01-23/2 * * *', 'django.core.management.call_command',
      ['vt_report'], {}),
+    ('*/10 * * * *', 'django.core.management.call_command',
+     ['get_new_hash'], {})
 ]
 
 # Static files (CSS, JavaScript, Images)

@@ -12,6 +12,7 @@ django-crontab = "*"
 django-environ = "*"
 requests = "*"
 wordcloud = "*"
+requests-oauthlib = "*"
 
 [requires]
 python_version = "3.8"
