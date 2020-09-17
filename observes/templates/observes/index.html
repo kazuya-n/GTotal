@@ -33,4 +33,46 @@
 {% else %}
 <p>No hashs are available.</p>
 {% endif %}
+
+<!-- <div class="pagination">
+    <span class="step-links">
+        {% if latest_hash_list.has_previous %}
+        <a href="?p=1">&laquo; first</a>
+        <a href="?p={{ latest_hash_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ latest_hash_list.number }} of {{ latest_hash_list.paginator.num_pages }}.
+        </span>
+
+        {% if latest_hash_list.has_next %}
+        <a href="?p={{ latest_hash_list.next_page_number }}">next</a>
+        <a href="?p={{ latest_hash_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div> -->
+
+<nav class="pagination is-centered">
+    {% if latest_hash_list.has_previous %}
+    <a class="pagination-previous" href="?page=
+        {{ latest_hash_list.previous_page_number|stringformat:"d" }}{{ getvars }}{{ hashtag }}">Previous</a>
+    {% else %}
+    <a class="pagination-previous" disabled>Previous</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <a class="pagination-next"
+        href="?page={{ latest_hash_list.next_page_number|stringformat:"d" }}{{ getvars }}{{ hashtag }}">Next</a>
+    {% else %}
+    <a class="pagination-next" disabled>Next</a>
+    {% endif %}
+
+    <ul class="pagination-list">
+        {% for page in latest_hash_list.paginator.page_range %}
+        <li><a class="pagination-link{% ifequal page latest_hash_list.number %} is-current{% endifequal %}"
+                href="?p={{ page|stringformat:"d" }}{{ getvars }}{{ hashtag }}">{{ page|stringformat:"d" }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
+
 {% endblock %}

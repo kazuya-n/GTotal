@@ -3,11 +3,13 @@ from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import now
+from django.db.models import Avg, Max, Min, Sum
 
 import environ
 import json
 import requests
 import time
+import os
 
 from ...models import Hash, Scan
 
@@ -21,6 +23,13 @@ class Command(BaseCommand):
         env = environ.Env()
         for h in Hash.objects.all():
             print(h.sha256)
+
+            # obserbing for 2 weeks
+            first = h.detection_of_hash.all().aggregate(Min('create_date'))['create_date__min']
+            last = h.detection_of_hash.all().aggregate(Max('create_date'))['create_date__max']
+            if (last-first).days > 13:
+                continue
+
             r = requests.post(
                 f'https://www.virustotal.com/vtapi/v2/file/report?apikey={env("VT_API_KEY")}&resource={h.sha256}&allinfo=true'
             )
@@ -30,7 +39,7 @@ class Command(BaseCommand):
                 engines = js["total"]
                 detections = js["positives"]
                 scan_date = parse_datetime(js["scan_date"])
-                filename = h.sha256 + '/savings/log_' + now().strftime('%Y%m%d_%H%M%S') + '.json'
+                filename = os.path.abspath(os.path.dirname(__name__)) + '/savings/' + h.sha256 + '/log_' + now().strftime('%Y%m%d_%H%M%S') + '.json'
                 path = default_storage.save(
                     filename,  ContentFile(json.dumps(js).encode('utf-8'))
                 )

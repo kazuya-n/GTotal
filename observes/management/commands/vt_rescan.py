@@ -3,6 +3,7 @@ from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import now
+from django.db.models import Avg, Max, Min, Sum
 
 import environ
 import json
@@ -21,6 +22,13 @@ class Command(BaseCommand):
         env = environ.Env()
         for h in Hash.objects.all():
             print(h.sha256)
+
+            # obserbing for 2 weeks
+            first = h.detection_of_hash.all().aggregate(Min('create_date'))['scan_date__min']
+            last = h.detection_of_hash.all().aggregate(Max('create_date'))['scan_date__max']
+            if (last-first).days > 13:
+                continue
+            
             headers = {
                 "x-apikey": env("VT_API_KEY")
             }
