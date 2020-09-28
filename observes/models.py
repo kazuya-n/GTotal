@@ -27,3 +27,21 @@ class ReAnalyze(models.Model):
 
     sha256 = models.ForeignKey(
         Hash, verbose_name='hash', on_delete=models.CASCADE)
+
+
+class AvclassResult(models.Model):
+    sha256 = models.ForeignKey(
+       Hash, verbose_name='hash', on_delete=models.CASCADE, related_name="avclass_results_of_hash")
+    scan = models.ForeignKey(
+       Scan, verbose_name='scan', on_delete=models.CASCADE, related_name="avclass_result_of_scan")
+    family_count = models.IntegerField(
+        '# of AV engines which detects family level', null=True, blank=True)
+    class_count = models.IntegerField(
+        '# of AV engines which detects class level', null=True, blank=True)
+    beh_count = models.IntegerField(
+        '# of AV engines which detects behavior level', null=True, blank=True)
+    file_count = models.IntegerField(
+        '# of AV engines which detects file level', null=True, blank=True)
+    unk_count = models.IntegerField(
+        '# of AV engines which detects unknown level', null=True, blank=True)
+    result = models.JSONField(null=True, blank=True)

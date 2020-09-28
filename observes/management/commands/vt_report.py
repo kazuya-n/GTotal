@@ -11,7 +11,7 @@ import requests
 import time
 import os
 
-from ...models import Hash, Scan
+from ...models import Hash, Scan, AvclassResult
 
 
 # BaseCommandを継承して作成

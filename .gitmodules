@@ -1,0 +1,3 @@
+[submodule "observes/management/commands/avclass"]
+	path = observes/management/commands/avclass
+	url = https://github.com/kazuya-n/avclass.git
