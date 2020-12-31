@@ -9,7 +9,8 @@ from observes.models import Hash, Scan
 def index(request):
     return JsonResponse(
         {
-            "info" : f"there are # {len(Hash.objects.all())} Hashes"
+            "hashes" : Hash.objects.count(),
+            "scans": Scan.objects.count()
         }
     )
 
@@ -48,6 +49,7 @@ def scan_results(request, scan_id):
         "rescan_date":s.scan_date,
         "engines":s.engines,
         "detections": s.detections,
+        "raw_results":s.report,
         "avc_results": avc.result
     }
     return JsonResponse(res, safe=False)

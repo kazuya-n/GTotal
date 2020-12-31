@@ -1,8 +1,22 @@
 {% extends "observes/base.html" %}
+
+{% block title %}
+<section class="hero is-warning">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Latest Observations
+            </h1>
+            <h2 class="subtitle">
+                Now observing {{ total }} malicious hashes
+            </h2>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
 {% block content %}
 {% if latest_hash_list %}
-
-<h1 class="title">Latest Obserbations</h1>
 
 {% for hash in latest_hash_list %}
 

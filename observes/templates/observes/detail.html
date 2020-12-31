@@ -1,4 +1,20 @@
 {% extends "observes/base.html" %}
+
+{% block title %}
+<section class="hero is-danger">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Observations Details
+            </h1>
+            <h2 class="subtitle">
+                Now collecting {{ count }} VirusTotal Scans
+            </h2>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
 {% block content %}
 <div class="columns">
     <div class="box column is-one-third">
@@ -29,7 +45,80 @@
         </div>
     </div>
 </div>
-<div class = "title">detections</div>
+<div class="title">Aggregation</div>
+<div class= "columns">
+    <div class = "column is-one-fifth">
+        <article class="message is-danger is-large">
+            <div class="message-header">
+                <p>Family <i class="fas fa-bug"></i></p>
+            </div>
+            <div class="message-body">
+                {% if  avc.0 %}
+                {{avc.0.0}} : {{avc.0.1}}
+                {% else %}
+                None
+                {% endif %}
+            </div>
+        </article>
+    </div>
+    <div class="column is-one-fifth">
+        <article class="message is-warning is-large">
+            <div class="message-header">
+                <p>Type <i class="fas fa-laptop-code"></i></p>
+            </div>
+            <div class="message-body">
+                {% if  avc.1 %}
+                {{avc.1.0}} : {{avc.1.1}}
+                {% else %}
+                None
+                {% endif %}
+            </div>
+        </article>
+    </div>
+    <div class="column is-one-fifth">
+        <article class="message is-success is-large">
+            <div class="message-header">
+                <p>Behavior <i class="fa fa-spider"></i></p>
+            </div>
+            <div class="message-body">
+                {% if  avc.2 %}
+                {{avc.2.0}} : {{avc.2.1}}
+                {% else %}
+                None
+                {% endif %}
+            </div>
+        </article>
+    </div>
+    <div class="column is-one-fifth">
+        <article class="message is-primary is-large">
+            <div class="message-header">
+                <p>Class <i class="fa fa-viruses"></i></p>
+            </div>
+            <div class="message-body">
+                {% if  avc.3 %}
+                {{avc.3.0}} : {{avc.3.1}}
+                {% else %}
+                None
+                {% endif %}
+            </div>
+        </article>
+    </div>
+    <div class="column is-one-fifth">
+        <article class="message is-info is-large">
+            <div class="message-header">
+                <p>Other <i class="far fa-question-circle"></i></p>
+            </div>
+            <div class="message-body">
+                {% if  avc.4 %}
+                {{avc.4.0}} : {{avc.4.1}}
+                {% else %}
+                None
+                {% endif %}
+            </div>
+        </article>
+    </div>
+</div>
+<div class = "title">Detections</div>
 <div>
     <canvas id="lineChart" height="200" width="400"></canvas>
 </div>

@@ -17,6 +17,18 @@ import wordcloud
 from .forms import HashForm
 from .models import Hash
 
+form = HashForm()
+
+def dashboard(request):
+    all_hash_list = Hash.objects.all()
+    template = loader.get_template('observes/dashboard.html')
+    paginator = Paginator(all_hash_list, 10)
+    p = request.GET.get('p')
+    p_hash_list = paginator.get_page(p)
+    context = {
+        'latest_hash_list': p_hash_list, 'form': form, 'total': len(all_hash_list)
+    }
+    return HttpResponse(template.render(context, request))
 
 def index(request):
     all_hash_list = Hash.objects.all()
@@ -25,13 +37,15 @@ def index(request):
     p = request.GET.get('p')
     p_hash_list = paginator.get_page(p)
     context = {
-        'latest_hash_list': p_hash_list,
+        'latest_hash_list': p_hash_list, 'form':form, 'total':len(all_hash_list)
     }
     return HttpResponse(template.render(context, request))
 
 def detail(request, sha256):
     hash = get_object_or_404(Hash, pk=sha256)
     scans = hash.detection_of_hash.all()
+    avclass = hash.avclass_results_of_hash.values_list('result', flat=True)
+    max_avc = get_max_detection(list(avclass))
     label = [s.scan_date.isoformat() for s in scans]
     dets = [s.detections for s in scans]
     engs = [s.engines for s in scans]
@@ -55,7 +69,7 @@ def detail(request, sha256):
 
     image_64 = 'data:image/png;base64,' + urllib.parse.quote(string)
 
-    return render(request, 'observes/detail.html', {'hash': hash, 'scans':scans, 'label':label, 'dets':dets, 'engs':engs, "wc":image_64})
+    return render(request, 'observes/detail.html', {'hash': hash, 'scans': scans, 'label': label, 'dets': dets, 'engs': engs, "wc": image_64, "avc": max_avc, 'form': form, 'count':len(scans)})
 
 def register(request):
     if request.method == 'GET':
@@ -68,3 +82,29 @@ def register(request):
             h.observing=True
             h.save()
         return HttpResponseRedirect(reverse('observes:index', ))
+
+
+def get_max_detection(reps):
+    count = {
+        "FILE": {},
+        "FAM": {},
+        "BEH": {},
+        "CLASS": {},
+        "UNK": {}
+    }
+    for ex_rep in reps:
+        for k, v in ex_rep.items():
+            dets = [v2["name"] for v2 in v]
+            temp = [len(dets["av"]) for dets in v]
+            max_det = dets[temp.index(max(temp))]
+            if max_det in count[k].keys():
+                count[k][max_det] += max(temp)
+            else:
+                count[k][max_det] = max(temp)
+        #     print([fam, file, beh, clas, unk])
+    fam = max(count["FAM"].items(), key=lambda x: x[1], default=None)
+    fil = max(count["FILE"].items(), key=lambda x: x[1], default=None)
+    beh = max(count["BEH"].items(), key=lambda x: x[1], default=None)
+    clas = max(count["CLASS"].items(), key=lambda x: x[1], default=None)
+    unk = max(count["UNK"].items(), key=lambda x: x[1], default=None)
+    return fam, fil, beh, clas, unk

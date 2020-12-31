@@ -18,6 +18,8 @@ class Command(BaseCommand):
             for scan in scans:
                 if scan.avclass_result_of_scan.all():
                     continue
+                if not scan.report:
+                    continue
                 avc = self.get_taxonomy_from_vt_report(scan.report)
                 cat_map = {'FAM': [], 'CLASS': [],
                            'BEH': [], 'FILE': [], 'UNK':[]
