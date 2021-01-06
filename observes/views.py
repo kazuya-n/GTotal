@@ -1,3 +1,7 @@
+from django.db.models import Count
+from django.core import serializers
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
@@ -15,18 +19,39 @@ import re
 import wordcloud
 
 from .forms import HashForm
-from .models import Hash
+from .models import Hash, Scan, RawReportEntropies
+
 
 form = HashForm()
 
 def dashboard(request):
-    all_hash_list = Hash.objects.all()
+    all_hash_count = Hash.objects.all().count()
+    all_scan_count = Scan.objects.all().count()
+
+    today = timezone.now()
+    anweekago = today + relativedelta(weeks=-2)
+
+    week_hashes = Hash.objects.filter(create_date__range=[anweekago, today])
+    week_results = Scan.objects.filter(create_date__range=[anweekago, today])
+    week_avc_rank = week_results.values('avclass_result_of_scan__family').annotate(
+        count=Count('sha256')).order_by('-count')[0:10]
+
+    week_hashes_count = week_hashes.extra({'date': 'date(create_date)'}).values(
+        'date').annotate(count=Count('sha256'))
+    week_results_count = week_results.extra({'date': 'date("create_date")'}).values(
+        'date').annotate(count=Count('sha256'))
+
+    today = timezone.now()
+    anweekago = today + relativedelta(weeks=-1)
+
     template = loader.get_template('observes/dashboard.html')
-    paginator = Paginator(all_hash_list, 10)
-    p = request.GET.get('p')
-    p_hash_list = paginator.get_page(p)
     context = {
-        'latest_hash_list': p_hash_list, 'form': form, 'total': len(all_hash_list)
+        'form': form,
+        'total_hash': all_hash_count,
+        'total_scan': all_scan_count,
+        'avc_rank' : week_avc_rank,
+        'week_hash': week_hashes_count,
+        'week_scan': week_results_count
     }
     return HttpResponse(template.render(context, request))
 
@@ -50,6 +75,8 @@ def detail(request, sha256):
     dets = [s.detections for s in scans]
     engs = [s.engines for s in scans]
     tokens = []
+    entropies = []
+    watched = []
     for scan in scans:
         reports = scan.report
         engines = reports["scans"].keys()
@@ -57,6 +84,20 @@ def detail(request, sha256):
             if reports["scans"][e]["detected"]:
                 res = reports["scans"][e]["result"]
                 tokens += re.split("[\.\s\/]",res.rstrip())
+                if (e, res) in watched:
+                    continue
+                raw_ent = RawReportEntropies.objects.filter(engine=e, report=res, entropy__lte = 0.5).first()
+                if raw_ent:
+                    entropies.append(
+                        {
+                            'engine':e,
+                            'report':res,
+                            'entropy':raw_ent.entropy,
+                            'vc': json.loads(raw_ent.valuecounts)
+                        }
+                    )
+                watched.append((e, res))
+    entropies = sorted(entropies, key=lambda k: k['entropy'])[:10]
     wc = wordcloud.WordCloud(background_color="white", width=1200, height=800).generate(" ".join(tokens))
     plt.figure(figsize=(8, 6))
     plt.imshow(wc)
@@ -69,7 +110,7 @@ def detail(request, sha256):
 
     image_64 = 'data:image/png;base64,' + urllib.parse.quote(string)
 
-    return render(request, 'observes/detail.html', {'hash': hash, 'scans': scans, 'label': label, 'dets': dets, 'engs': engs, "wc": image_64, "avc": max_avc, 'form': form, 'count':len(scans)})
+    return render(request, 'observes/detail.html', {'hash': hash, 'scans': scans, 'label': label, 'dets': dets, 'engs': engs, "wc": image_64, "avc": max_avc, 'form': form, 'count':len(scans), 'entropies':entropies})
 
 def register(request):
     if request.method == 'GET':
@@ -82,7 +123,6 @@ def register(request):
             h.observing=True
             h.save()
         return HttpResponseRedirect(reverse('observes:index', ))
-
 
 def get_max_detection(reps):
     count = {

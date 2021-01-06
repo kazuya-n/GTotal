@@ -132,7 +132,9 @@ CRONJOBS = [
     ('*/10 * * * *', 'django.core.management.call_command',
      ['get_new_hash'], {}),
     ('30 */2 * * *', 'django.core.management.call_command',
-     ['get_avclass'], {})
+     ['get_avclass'], {}),
+    ('0 0 * * *', 'django.core.management.call_command',
+     ['calc_entropy'], {})
 ]
 
 # Static files (CSS, JavaScript, Images)

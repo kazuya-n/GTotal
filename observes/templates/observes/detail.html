@@ -45,7 +45,8 @@
         </div>
     </div>
 </div>
-<div class="title">Aggregation</div>
+<div class="title pt-5">Aggregation</div>
+<div class="subtitle">Suggests most likely malwaree family, types and behaviors</div>
 <div class= "columns">
     <div class = "column is-one-fifth">
         <article class="message is-danger is-large">
@@ -54,9 +55,9 @@
             </div>
             <div class="message-body">
                 {% if  avc.0 %}
-                {{avc.0.0}} : {{avc.0.1}}
+                {{avc.0.0}} : <span class="count" data-num="{{avc.0.1}}">{{avc.0.1|add:"-100"}}</span>
                 {% else %}
-                None
+                Not Available
                 {% endif %}
             </div>
         </article>
@@ -68,9 +69,9 @@
             </div>
             <div class="message-body">
                 {% if  avc.1 %}
-                {{avc.1.0}} : {{avc.1.1}}
+                {{avc.1.0}} : <span class="count" data-num="{{avc.1.1}}">{{avc.1.1|add:"-100"}}</span>
                 {% else %}
-                None
+                Not Available
                 {% endif %}
             </div>
         </article>
@@ -82,9 +83,9 @@
             </div>
             <div class="message-body">
                 {% if  avc.2 %}
-                {{avc.2.0}} : {{avc.2.1}}
+                {{avc.2.0}} : <span class="count" data-num="{{avc.2.1}}">{{avc.2.1|add:"-100"}}</span>
                 {% else %}
-                None
+                Not Available
                 {% endif %}
             </div>
         </article>
@@ -96,9 +97,9 @@
             </div>
             <div class="message-body">
                 {% if  avc.3 %}
-                {{avc.3.0}} : {{avc.3.1}}
+                {{avc.3.0}} : <span class="count" data-num="{{avc.3.1}}">{{avc.3.1|add:"-100"}}</span>
                 {% else %}
-                None
+                Not Available
                 {% endif %}
             </div>
         </article>
@@ -110,19 +111,91 @@
             </div>
             <div class="message-body">
                 {% if  avc.4 %}
-                {{avc.4.0}} : {{avc.4.1}}
+                {{avc.4.0}} : <span class="count" data-num="{{avc.4.1}}">{{avc.4.1|add:"-100"}}</span>
                 {% else %}
-                None
+                Not Available
                 {% endif %}
             </div>
         </article>
     </div>
 </div>
-<div class = "title">Detections</div>
+<div class = "title pt-5">Detections</div>
+<div class="subtitle">Transition of positive counts and available engines</div>
 <div>
     <canvas id="lineChart" height="200" width="400"></canvas>
 </div>
+<div class="title pt-5">Important Detection Reports</div>
+<div class="subtitle">Gathered from past results</div>
+<table class="table is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+            <th>Uncertainly (Entropy)</th>
+            <th>Engine</th>
+            <th>Report</th>
+            <th>Suggested Families (from past reports)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in entropies%}
+        <tr>
+            <td>{{ item.entropy }}</td>
+            <td>{{ item.engine }}</td>
+            <td>{{ item.report }}</td>
+            <td><canvas id="barChartEntropy-{{ forloop.counter0 }}" width="500" height="100"></canvas></td>
+            <script>
+                Chart.defaults.global.defaultFontSize = 18;
+                // get palette from palette.js
+                var ctx = document.getElementById("barChartEntropy-{{ forloop.counter0 }}").getContext("2d");
+                var myChart = new Chart(ctx, {
+                    type: 'horizontalBar',
+                    data: {
+                        // labels: ['{{ item.engine }}'],
+                        datasets: [
+                            {% for key, value in item.vc.items %}
+                            {
+                                label: ['{{key}}'],
+                                data: [{{value}}],
+                            },
+                            {% endfor %}
+                        ]
+                    },
+                    options: {
+                        tooltips: { enabled: false },
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                                ticks: {
+                                    beginAtZero: true,
+                                    min: 0,
+                                    max: 1
+                                }
+                            }],
+                            yAxes: [{
+                                stacked: true,
+                                ticks: {
+                                    beginAtZero: true,
+                                    min: 0,
+                                    max: 1
+                                }
+                            }]
+                        },
+                        plugins: {
+                            colorschemes: {
+                                scheme: 'office.Equity6'
+                            }
+                        },
+                        legend: {
+                            display: true,
+                        }
+                    }
+                })
+            </script>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <script language="JavaScript">
+    Chart.defaults.global.defaultFontSize = 18;
     chartColors = {
         red: 'rgb(255, 99, 132)',
         orange: 'rgb(255, 159, 64)',
@@ -139,13 +212,18 @@
         datasets: [{
                 label: "Detections",
                 data: {{ dets }},
-                backgroundColor: chartColors.red,
-                borderColor: chartColors.red,
+                // backgroundColor: chartColors.red,
+                // borderColor: chartColors.red,
+                // pointBorderColor: chartColors.red,
+                // pointBackgroundColor: chartColors.red,
+
         },{
                 label: "Engines",
                 data: {{ engs }},
-                backgroundColor: chartColors.blue,
-                borderColor: chartColors.blue,
+                // backgroundColor: chartColors.blue,
+                // borderColor: chartColors.blue,
+                // pointBorderColor: chartColors.blue,
+                // pointBackgroundColor: chartColors.blue,
         },
         ]
     };
@@ -153,13 +231,18 @@
     var options = {
         scales: {
             xAxes: [{
-            type: 'time',
-            time: {
-            displayFormats: {
-            quarter: 'MMM YYYY'
-            }
-            }
+                type: 'time',
+                time: {
+                    displayFormats: {
+                        quarter: 'MMM YYYY'
+                    } 
+                }
             }]
+        },
+        plugins: {
+            colorschemes: {
+                scheme: 'office.Headlines6'
+            }
         }
     };
     var lineChart = new Chart(ctx, {

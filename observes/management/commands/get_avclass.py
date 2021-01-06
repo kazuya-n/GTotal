@@ -30,12 +30,38 @@ class Command(BaseCommand):
                     for n in names:
                         avs += n["av"]
                     cat_map[cat]=list(set(avs))
+                file = 'nan'
+                fam = 'nan'
+                beh = 'nan'
+                clas = 'nan'
+                unk = 'nan'
+                for k, v in avc.items():
+                    #         print(k)
+                    dets = [v2["name"] for v2 in v]
+                    temp = [len(dets["av"]) for dets in v]
+                    max_det = dets[temp.index(max(temp))]
+                    if k == "FILE":
+                        file = max_det
+                    elif k == "FAM":
+                        fam = max_det
+                    elif k == "BEH":
+                        beh = max_det
+                    elif k == "CLASS":
+                        clas = max_det
+                    elif k == "UNK":
+                        unk = max_det
+
                 acr = AvclassResult(sha256=sha256, scan=scan, 
                                     family_count = len(cat_map["FAM"]),
-                                    class_count = len(cat_map["CLASS"]),
+                                    family = fam,
+                                    variety_count = len(cat_map["CLASS"]),
+                                    variety = clas,
                                     beh_count = len(cat_map["BEH"]),
+                                    beh = beh,
                                     file_count = len(cat_map["FILE"]),
+                                    file=file,
                                     unk_count=len(cat_map["UNK"]),
+                                    unk = unk,
                                     result=avc
                                     )
                 acr.save()

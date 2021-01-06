@@ -36,12 +36,28 @@ class AvclassResult(models.Model):
        Scan, verbose_name='scan', on_delete=models.CASCADE, related_name="avclass_result_of_scan")
     family_count = models.IntegerField(
         '# of AV engines which detects family level', null=True, blank=True)
-    class_count = models.IntegerField(
+    family = models.CharField('max votes for family', max_length=50, default='nan')
+    variety_count = models.IntegerField(
         '# of AV engines which detects class level', null=True, blank=True)
+    variety = models.CharField(
+        'max votes for class', max_length=50, default='nan')
     beh_count = models.IntegerField(
         '# of AV engines which detects behavior level', null=True, blank=True)
+    beh = models.CharField('max votes for variety',
+                           max_length=50, default='nan')
     file_count = models.IntegerField(
         '# of AV engines which detects file level', null=True, blank=True)
+    file = models.CharField('max votes for file', max_length=50, default='nan')
     unk_count = models.IntegerField(
         '# of AV engines which detects unknown level', null=True, blank=True)
+    unk = models.CharField('max votes for unknown',
+                           max_length=50, default='nan')
     result = models.JSONField(null=True, blank=True)
+
+
+class RawReportEntropies(models.Model):
+    create_date = models.DateTimeField('date created', default=timezone.now)
+    engine = models.CharField('AV engine', max_length=30)
+    report = models.CharField('raw report', max_length=100)
+    entropy = models.FloatField('entropy')
+    valuecounts = models.JSONField(null=True, blank=True)

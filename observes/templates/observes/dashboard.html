@@ -8,7 +8,7 @@
                 Dashboard
             </h1>
             <h2 class="subtitle">
-                aaaaa
+                Overviews of obserbations.
             </h2>
         </div>
     </div>
@@ -16,4 +16,123 @@
 {% endblock %}
 
 {% block content %}
+<div class="title">Total counts</div>
+<div class="subtitle">Malicious hashes and VT Scans</div>
+<div class="columns">
+    <div class="column is-half has-text-centered">
+        <div class="box">
+            <h1 class="title is-2">Total registered hashes <i class="fas fa-bug"></i></h1>
+            <h1 class="title is-1">
+                <p class="count" data-num="{{total_hash}}">{{total_hash|add:"-100"}}</p>
+            </h1>
+        </div>
+    </div>
+    <div class="column is-half has-text-centered">
+        <div class="box">
+            <h1 class="title is-2">Total registered reports <i class="far fa-clipboard"></i></h1>
+            <h1 class="title is-1">
+                <p class="count" data-num="{{total_scan}}">{{total_scan|add:"-100"}}</p>
+            </h1>
+        </div>
+    </div>
+</div>
+<div class="title pt-5">Total family counts of observations</div>
+<div class="subtitle">in this 2 weeks</div>
+<div>
+    <canvas id="barChartFamily" height="200" width="400"></canvas>
+</div>
+
+<div class="title pt-5">Registered Hashes and Gathered Reports</div>
+<div class="subtitle">in this 2 weeks</div>
+<div>
+    <canvas id="lineChartHash" height="50" width="400"></canvas>
+    <canvas id="lineChartScan" height="50" width="400"></canvas>
+</div>
+<script language="JavaScript">
+    Chart.defaults.global.defaultFontSize = 18;
+
+    chartColors = {
+        red: 'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 192)',
+        blue: 'rgb(54, 162, 235)',
+        purple: 'rgb(153, 102, 255)',
+        grey: 'rgb(201, 203, 207)'
+    };
+
+    var data_family = {
+        labels: [{% for item in avc_rank %}
+        "{{item.avclass_result_of_scan__family}}",
+            {% endfor %}],
+        datasets: [{
+            label: "Count",
+            data: [{% for item in avc_rank %}
+                {{ item.count }},
+            {% endfor %}],
+            backgroundColor: chartColors.orange,
+            borderColor: chartColors.orange
+        }]
+    };
+
+    var data_hash = {
+        labels: [{% for item in week_hash %}
+    "{{item.date}}",
+        {% endfor %}],
+        datasets: [{
+            label: "Hashes",
+            data: [{% for item in week_hash %}
+            {{ item.count }},
+        {% endfor %}],
+            backgroundColor: chartColors.blue,
+            borderColor: chartColors.blue,
+        }]
+    };
+    
+    var data_scan = {
+        labels: [{% for item in week_scan %}
+    "{{item.date}}",
+        {% endfor %}],
+        datasets: [{
+            label: "Reports",
+            data: [{% for item in week_scan %}
+                {{ item.count }},
+            {% endfor %}],
+            backgroundColor: chartColors.red,
+            borderColor: chartColors.red,
+        }]
+    };
+    var ctx_scan = document.getElementById("lineChartScan").getContext("2d");
+    var ctx_hash = document.getElementById("lineChartHash").getContext("2d");
+    var ctx_family = document.getElementById("barChartFamily").getContext("2d");
+    var options_line = {
+        scales: {
+            xAxes: [{
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    displayFormats: {
+                        quarter: 'MMM YYYY'
+                    }
+                }
+            }]
+        }
+    };
+    var options_bar = { "scales": { "yAxes": [{ "ticks": { "beginAtZero": true } }] } };
+    var lineChart1 = new Chart(ctx_scan, {
+        type: 'line',
+        data: data_scan,
+        options: options_line
+    });
+    var lineChart2 = new Chart(ctx_hash, {
+        type: 'line',
+        data: data_hash,
+        options: options_line
+    })
+    var barChart1 = new Chart(ctx_family, {
+        type: 'horizontalBar',
+        data: data_family,
+        options: options_bar
+    });
+</script>
 {% endblock %}
