@@ -41,9 +41,6 @@ def dashboard(request):
     week_results_count = week_results.extra({'date': 'date("create_date")'}).values(
         'date').annotate(count=Count('sha256'))
 
-    today = timezone.now()
-    anweekago = today + relativedelta(weeks=-1)
-
     template = loader.get_template('observes/dashboard.html')
     context = {
         'form': form,
@@ -61,8 +58,9 @@ def index(request):
     paginator = Paginator(all_hash_list, 10)
     p = request.GET.get('p')
     p_hash_list = paginator.get_page(p)
+    family = [h.avclass_results_of_hash.values('family').annotate(count=Count('family')).order_by('-count').first() for h in p_hash_list]
     context = {
-        'latest_hash_list': p_hash_list, 'form':form, 'total':len(all_hash_list)
+        'latest_hash_list': p_hash_list, 'form':form, 'total':len(all_hash_list), 'family':family
     }
     return HttpResponse(template.render(context, request))
 

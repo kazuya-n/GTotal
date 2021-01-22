@@ -18,13 +18,20 @@
 {% block content %}
 {% if latest_hash_list %}
 
-{% for hash in latest_hash_list %}
+{% load boost %}
+{% for hash, fam in latest_hash_list|zip:family %}
 
 <div class="card">
     <div class="card-content">
         <p class="title">
             <span class="is-danger">{{ hash.detection_of_hash.last.detections }}</span> ← {{ hash.detection_of_hash.first.detections }}
         </p>
+        {% if fam.family != 'nan' %}
+        <div class="tags has-addons is-pulled-right">
+            <span class="tag">{{ fam.family }}</span>
+            <span class="tag is-danger">{{ fam.count }}</span>
+        </div>
+        {% endif %}
         <p class="subtitle">
             <a href="{% url 'observes:detail' hash.sha256 %}">{{ hash.sha256 }}</a>
         </p>
