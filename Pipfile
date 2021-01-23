@@ -15,6 +15,7 @@ wordcloud = "*"
 requests-oauthlib = "*"
 pandas = "*"
 django-boost = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.8"
