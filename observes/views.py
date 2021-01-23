@@ -14,6 +14,7 @@ import json
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 import urllib
 import re
 import wordcloud
@@ -96,7 +97,10 @@ def detail(request, sha256):
                     )
                 watched.append((e, res))
     entropies = sorted(entropies, key=lambda k: k['entropy'])[:10]
-    wc = wordcloud.WordCloud(background_color="white", width=1200, height=800).generate(" ".join(tokens))
+    if tokens:
+        wc = wordcloud.WordCloud(background_color="white", width=1200, height=800).generate(" ".join(tokens))
+    else:
+        wc = np.ones((800,1200,3))
     plt.figure(figsize=(8, 6))
     plt.imshow(wc)
     plt.axis("off")
