@@ -33,7 +33,7 @@ SECRET_KEY = 'g#anj6j-2l*djqgk5b$*nmm^nnc_^kkd&s=%=p-@^j_2_qn5e#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.0.40"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -130,8 +130,8 @@ CRONJOBS = [
      ['vt_rescan'], {}),
     ('0 01-23/2 * * *', 'django.core.management.call_command',
      ['vt_report'], {}),
-    ('*/10 * * * *', 'django.core.management.call_command',
-     ['get_new_hash'], {}),
+    # ('*/10 * * * *', 'django.core.management.call_command',
+    #  ['get_new_hash'], {}),
     ('30 */2 * * *', 'django.core.management.call_command',
      ['get_avclass'], {}),
     ('0 0 * * *', 'django.core.management.call_command',

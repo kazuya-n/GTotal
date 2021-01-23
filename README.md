@@ -5,19 +5,23 @@
   ![VTTotal](documents/images/vttotal_image.png)
 
 # Installation
-- requires **python3** and **pipenv**
+- requires **python3**, **pipenv** and **SQLite>=3.8.3**
+- Recommend to use **pyenv**
 ```shell
 # Install dependencies
-$ pipenv install --python 3
-$ pipenv install
+$ pipenv sync
 
 # Setting VT API Key
 $ cp .env.example .env
 # Add your API Key on .env file
 
+# Create cron jobs
+$ python manage.py crontab add
+
 # launch server
 $ pipenv shell
-(VTTotal)$ python manage.py runserver
+(VTTotal)$ python manage.py migrate
+(VTTotal)$ python manage.py runserver 0.0.0.0:8000
 
 # access localhost:8000 :-)
 ```
