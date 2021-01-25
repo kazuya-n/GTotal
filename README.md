@@ -7,6 +7,19 @@
 > An hash-based obserbation tool of VirusTotal
 
 # Installation
+## Docker
+```shell
+# Setting VT API Key
+$ cp .env.example .env
+# Add your API Key on .env file
+
+$ docker build -t vttotal:latest .
+$ docker run -p {your_port}:8000 vttotal:latest
+
+# access localhost:{your_port} :-)
+```
+
+## From Source (run django)
 - requires **python3**, **pipenv** and **SQLite>=3.8.3**
 - Recommend to use **pyenv**
 ```shell
