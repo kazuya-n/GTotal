@@ -1,8 +1,10 @@
 # VirusTotalTotal (VTTotal)
 [![SecHack365](https://img.shields.io/badge/SecHack365-2020-ffd700.svg)](https://sechack365.nict.go.jp/)
+[![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- An hash-based obserbation tool of VirusTotal
-  ![VTTotal](documents/images/vttotal_image.png)
+![VTTotal](documents/images/vtt_logo.png)
+
+> An hash-based obserbation tool of VirusTotal
 
 # Installation
 - requires **python3**, **pipenv** and **SQLite>=3.8.3**
@@ -15,11 +17,10 @@ $ pipenv sync
 $ cp .env.example .env
 # Add your API Key on .env file
 
-# Create cron jobs
-$ python manage.py crontab add
-
 # launch server
 $ pipenv shell
+# Create cron jobs
+(VTTotal)$ python manage.py crontab add
 (VTTotal)$ python manage.py migrate
 (VTTotal)$ python manage.py runserver 0.0.0.0:8000
 
@@ -33,6 +34,10 @@ $ pipenv shell
 - Gather information and automatic tagging via [AVClass2](https://github.com/malicialab/avclass/).
 - Show dynamics of detections by av-vendors and available engines.
 - Entropy based suggestions of raw detection reports calculated from past family tagging.
+
+# Screenshots
+![Detail](documents/images/vttotal_image.png)
+![Dashboard](documents/images/vttotal_dashboard.png)
 
 # Why VTTotal?
 ## Background
