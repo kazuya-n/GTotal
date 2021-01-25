@@ -16,6 +16,10 @@ COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python
 
 COPY . ./
 
+RUN apt update
+
+RUN apt-get install -y cron
+
 RUN python manage.py crontab add
 
 RUN python manage.py migrate
