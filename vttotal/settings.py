@@ -17,7 +17,7 @@ from django.core.management.utils import get_random_secret_key
 try:
     from .local_settings import *
 except ImportError:
-    with open('local_settings.py', mode='w') as f:
+    with open(path.dirname(path.abspath(__file__)) + '/local_settings.py', mode='w') as f:
         f.write(f'SECRET_KEY = {get_random_secret_key()}\n')
     from .local_settings import *
 
