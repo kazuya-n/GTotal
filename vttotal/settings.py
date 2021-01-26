@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import environ
 from pathlib import Path
 import os
+from django.core.management.utils import get_random_secret_key
+
+try:
+    from .local_settings import *
+except ImportError:
+    with open('local_settings.py', mode='w') as f:
+        f.write(f'SECRET_KEY = {get_random_secret_key()}\n')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +34,6 @@ if READ_ENV_FILE:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g#anj6j-2l*djqgk5b$*nmm^nnc_^kkd&s=%=p-@^j_2_qn5e#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

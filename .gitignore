@@ -151,3 +151,4 @@ dmypy.json
 
 # Original Additions
 savings/*
+vttotal/local_settings.py
