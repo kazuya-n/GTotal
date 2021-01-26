@@ -1,27 +1,28 @@
-from django.db.models import Count
-from django.core import serializers
-from dateutil.relativedelta import relativedelta
-from django.utils import timezone
-from django.core.paginator import Paginator
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-
 import base64
 import io
 import json
+
 import matplotlib
+from dateutil.relativedelta import relativedelta
+from django.core import serializers
+from django.core.paginator import Paginator
+from django.db.models import Count
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.template import loader
+from django.urls import reverse
+from django.utils import timezone
+
 matplotlib.use('Agg')
+import re
+import urllib
+
 import matplotlib.pyplot as plt
 import numpy as np
-import urllib
-import re
 import wordcloud
 
 from .forms import HashForm
-from .models import Hash, Scan, RawReportEntropies
-
+from .models import Hash, RawReportEntropies, Scan
 
 form = HashForm()
 

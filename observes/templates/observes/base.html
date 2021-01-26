@@ -43,35 +43,43 @@
                 {% endblock %}
             </div>
         </section>
-        <div class="modal">
-            <form action="{% url 'observes:register' %}" method="post">
+        <div class="modal" id ='hash-modal'>
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Add New Hash</p>
-                    <button class="delete" aria-label="close"></button>
+                    <button class="delete" aria-label="close" id="close"></button>
                 </header>
+                <form action="{% url 'observes:register' %}" method="post">
                 <section class="modal-card-body">
-                    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+                        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        <!-- {{ form.as_p }} -->
+                        {% for item in form %}
+                            <div class="field">
+                                <label for="{{item.id_for_label}}">{{item.label}}</label>
+                                <div class="control">
+                                    <input type="{{item.field.widget.input_type}}" class="input" {% if item.field.required %}required{% endif %}
+                                        name="{{item.name}}" id="{{item.id_for_label}}">
+                                </div>
+                            </div>
+                        {% endfor %}
                 </section>
                 <footer class="modal-card-foot">
                     <button class='button is-danger' type="submit" class="save btn btn-default">Save</button>
-                    <button class="button">Cancel</button>
                 </footer>
+                </form>
             </div>
-            </form >
         </div>
     </div>
 </body>
 <script type="text/javascript">
     $("#show_action").on("click", function () {
             $("div.modal").addClass("is-active");
+        });
+    $("#close, div.modal-background").on("click", function () {
+            $("div.modal").removeClass("is-active");
         })
-    $('div.modal-background,button.modal-close').on('click', function () {
-        $("div.modal").removeClass("is-active");
-    })
 </script>
 <script>//count up
     $(function () {
