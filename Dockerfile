@@ -14,11 +14,15 @@ ENV PYTHONUNBUFFERED=1
 
 COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 
+WORKDIR /app
+
 COPY . ./
 
 RUN apt update
 
 RUN apt-get install -y cron
+
+RUN /etc/init.d/cron restart
 
 RUN python manage.py crontab add
 
