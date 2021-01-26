@@ -1,3 +1,4 @@
+from django.db.models import Avg, Count, Min, Sum
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http.response import JsonResponse
@@ -7,6 +8,7 @@ from django.views.decorators.http import require_http_methods
 import json
 import re
 from observes.models import Hash, Scan
+
 
 
 @csrf_exempt
@@ -22,8 +24,8 @@ def index(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def register(request):
+    print(request.body)
     js = json.loads(request.body)
-    print(js)
     if not 'sha256' in js:
         return JsonResponse({'error': 'Bad Request : no sha256 field (400)'}, status=400)
     sha256 = js["sha256"]
@@ -86,9 +88,16 @@ def scan_results(request, scan_id):
 @csrf_exempt
 def aggregation(request, sha256):   
     hash = get_object_or_404(Hash, pk=sha256)
+    detections = hash.detection_of_hash.all().aggregate(Sum('detections'))
+    engines = hash.detection_of_hash.all().aggregate(Sum('engines'))
     avclass = hash.avclass_results_of_hash.values_list('result', flat=True)
     max_avc = get_max_detection(list(avclass))
-    return JsonResponse(max_avc, safe=False)
+    ret = {
+        'total_engines' : engines,
+        'total_detections' : detections,
+        'aggs' : max_avc
+    }
+    return JsonResponse(ret, safe=False)
 
 
 def get_max_detection(reps):

@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+from statistics import mean
 
 import matplotlib
 from dateutil.relativedelta import relativedelta
@@ -113,19 +114,10 @@ def detail(request, sha256):
 
     image_64 = 'data:image/png;base64,' + urllib.parse.quote(string)
 
-    return render(request, 'observes/detail.html', {'hash': hash, 'scans': scans, 'label': label, 'dets': dets, 'engs': engs, "wc": image_64, "avc": max_avc, 'form': form, 'count':len(scans), 'entropies':entropies})
+    pass_dict = {'hash': hash, 'scans': scans, 'label': label, 'dets': dets, 'engs': engs, "wc": image_64, "avc": max_avc,
+                 'form': form, 'count': len(scans), 'entropies': entropies}
 
-def register(request):
-    if request.method == 'GET':
-        form = HashForm()
-        return render(request, 'observes/register.html', {'form': form})
-    elif request.method == 'POST':
-        form = HashForm(request.POST)
-        if form.is_valid():
-            h = form.save(commit=False)
-            h.observing=True
-            h.save()
-        return HttpResponseRedirect(reverse('observes:index', ))
+    return render(request, 'observes/detail.html', pass_dict)
 
 def get_max_detection(reps):
     count = {

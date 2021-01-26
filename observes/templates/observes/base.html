@@ -38,6 +38,7 @@
     <div class="container">
         <section class="section">
             <div class="container">
+                <div id='notif-ph'></div>
                 {% block content %}
                 {{ content }}
                 {% endblock %}
@@ -50,25 +51,68 @@
                     <p class="modal-card-title">Add New Hash</p>
                     <button class="delete" aria-label="close" id="close"></button>
                 </header>
-                <form action="{% url 'observes:register' %}" method="post">
+                <form id="hash-form">
                 <section class="modal-card-body">
-                        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-                        {% csrf_token %}
-                        <!-- {{ form.as_p }} -->
-                        {% for item in form %}
-                            <div class="field">
-                                <label for="{{item.id_for_label}}">{{item.label}}</label>
-                                <div class="control">
-                                    <input type="{{item.field.widget.input_type}}" class="input" {% if item.field.required %}required{% endif %}
-                                        name="{{item.name}}" id="{{item.id_for_label}}">
-                                </div>
-                            </div>
-                        {% endfor %}
+                    <div id="form-alert">
+                    </div>
+                    <div class="field">
+                        <label class="label is-large">SHA256</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input is-large" type="text" name="sha256" id="sha256" placeholder="sha256 hash that you want to observe">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-hashtag"></i>
+                            </span>
+                            <span class="icon is-small is-right">
+                                <i class="fas fa-check fa-xs"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class='field'>
+                        <label class="label is-large">Notes</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input is-large" type="text" name="name" id="name" placeholder="Some notes you want to save">
+                            <span class="icon is-small is-left">
+                                <i class="far fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class='button is-danger' type="submit" class="save btn btn-default">Save</button>
+                    <button class='button is-danger' id="sub-hash">Save</button>
                 </footer>
                 </form>
+                <script>
+                    $(function () {
+                            $('#sub-hash').on('click', function (e) {
+                                e.preventDefault();
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/register/",
+                                    data: JSON.stringify(parseJson($('#hash-form').serializeArray())),
+                                    contentType: 'application/ json',
+                                    success: function (response) {
+                                        $("div.modal").removeClass("is-active");
+                                        $("#notif-ph").addClass('notification is-success');
+                                        $("#notif-ph").text(response['registered'] + " is appended to observation")
+                                    },
+                                    error: function (xhr, status, error) {
+                                        if(xhr.responseJSON){
+                                            $("#form-alert").addClass('notification is-danger');
+                                            $("#form-alert").text(xhr.responseJSON['error'])
+                                        }
+                                    }
+                                });
+                                return false;
+                            });
+                        })
+                    var parseJson = function (data) {
+                            var returnJson = {};
+                            for (idx = 0; idx < data.length; idx++) {
+                                returnJson[data[idx].name] = data[idx].value
+                            }
+                            return returnJson;
+                        }
+                </script>
             </div>
         </div>
     </div>
@@ -79,6 +123,7 @@
         });
     $("#close, div.modal-background").on("click", function () {
             $("div.modal").removeClass("is-active");
+            $("#form-alert").removeClass('notification is-danger').empty();
         })
 </script>
 <script>//count up

@@ -28,19 +28,23 @@
             {{ hash.name }}
         </div>
         <div class="columns">
-            <div class='column is-one-quarter'>
-                Registered
-            </div>
-            <div class='column is-three-quarter'>
-                {{ hash.create_date }}
-            </div>
-        </div>
-        <div class="columns">
-            <div class='column is-one-quarter'>
-                Last Scan
-            </div>
-            <div class='column is-three-quarter'>
-                {{ scans.last.scan_date }}
+            <div class="column is-half">
+                <div class="columns">
+                    <div class='column is-one-quarter'>
+                        Registered
+                    </div>
+                    <div class='column is-three-quarter'>
+                        {{ hash.create_date }}
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class='column is-one-quarter'>
+                        Last Scan
+                    </div>
+                    <div class='column is-three-quarter'>
+                        {{ scans.last.scan_date }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
