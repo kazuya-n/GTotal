@@ -30,4 +30,6 @@ RUN python manage.py crontab add
 
 RUN python manage.py migrate
 
-CMD ["python","manage.py","runserver","0.0.0.0:8000"]
+RUN chmod +x docker_start.sh
+
+CMD ["./docker_start.sh"]
