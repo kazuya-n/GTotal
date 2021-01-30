@@ -47,6 +47,7 @@ $ pipenv shell
 - Gather information and automatic tagging via [AVClass2](https://github.com/malicialab/avclass/).
 - Show dynamics of detections by av-vendors and available engines.
 - Entropy based suggestions of raw detection reports calculated from past family tagging.
+- REST API for batch observation & malware labelling
 
 # Screenshots
 ![Detail](documents/images/vttotal_image.png)
