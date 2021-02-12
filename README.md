@@ -1,4 +1,4 @@
-# VirusTotalTotal (VTTotal)
+# GTotal
 [![SecHack365](https://img.shields.io/badge/SecHack365-2020-ffd700.svg)](https://sechack365.nict.go.jp/)
 [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -40,7 +40,7 @@ $ pipenv shell
 # access localhost:8000 :-)
 ```
 
-# Features of VTTotal
+# Features of GTotal
 - Register malicious hash.
 - Automatic rescan and gather reports on VirusTotal.
     - Recommend to use Enterprise API key due to request rate limit.
@@ -53,7 +53,7 @@ $ pipenv shell
 ![Detail](documents/images/vttotal_image.png)
 ![Dashboard](documents/images/vttotal_dashboard.png)
 
-# Why VTTotal?
+# Why GTotal?
 ## Background
 - VirusTotal is an online malware detection tool which include about 70 antivirus engines.
 - But [current research](https://www.usenix.org/conference/usenixsecurity20/presentation/zhu) shows that VirusTotal detection will "flips" over time.
