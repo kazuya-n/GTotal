@@ -2,7 +2,7 @@
 [![SecHack365](https://img.shields.io/badge/SecHack365-2020-ffd700.svg)](https://sechack365.nict.go.jp/)
 [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![VTTotal](documents/images/vtt_logo.png)
+<img src="documents/images/GTotal.png" width="300">
 
 > An hash-based obserbation tool of VirusTotal
 
@@ -50,8 +50,8 @@ $ pipenv shell
 - REST API for batch observation & malware labelling
 
 # Screenshots
-![Detail](documents/images/vttotal_image.png)
-![Dashboard](documents/images/vttotal_dashboard.png)
+![Detail](documents/images/GT_detail.png)
+![Dashboard](documents/images/GT_dashboard.png)
 
 # Why GTotal?
 ## Background
