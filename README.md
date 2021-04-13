@@ -6,6 +6,10 @@
 
 > An hash-based obserbation tool of VirusTotal
 
+# Presentation
+- [SecHack365(JP)](https://sechack365.nict.go.jp/presentation/#exv03)
+- [ICSS(JP)](https://www.ieice.org/publications/ken/summary.php?contribution_id=112729)
+
 # Installation
 ## Docker
 ```shell
